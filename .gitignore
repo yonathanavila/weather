@@ -43,4 +43,9 @@ app.*.map.json
 /android/app/release
 
 # ENV
-*.env
+*.env/
+.env
+.env/
+/.env/
+/*.env
+/*.env/
