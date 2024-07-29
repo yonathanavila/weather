@@ -11,7 +11,7 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  late double temperature;
+  late int temperature;
   late String zoneName;
   late int condition;
 
@@ -23,7 +23,8 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateUI(dynamic weatherData) {
-    temperature = weatherData["main"]["temp"];
+    double temp = (weatherData["main"]["temp"]);
+    temperature = temp.toInt();
     condition = weatherData["weather"][0]["id"];
     zoneName = weatherData["name"];
   }
@@ -51,14 +52,14 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   TextButton(
                     onPressed: () {},
-                    child: Icon(
+                    child: const Icon(
                       Icons.near_me,
                       size: 50.0,
                     ),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Icon(
+                    child:const Icon(
                       Icons.location_city,
                       size: 50.0,
                     ),
@@ -66,14 +67,14 @@ class _LocationScreenState extends State<LocationScreen> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(left: 15.0),
+                padding: const EdgeInsets.only(left: 15.0),
                 child: Row(
                   children: <Widget>[
                     Text(
                       '$temperature°',
                       style: kTempTextStyle,
                     ),
-                    Text(
+                    const Text(
                       '☀️',
                       style: kConditionTextStyle,
                     ),
@@ -81,7 +82,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 15.0),
+                padding: const EdgeInsets.only(right: 15.0),
                 child: Text(
                   "It's 🍦 time in $zoneName!",
                   textAlign: TextAlign.right,
