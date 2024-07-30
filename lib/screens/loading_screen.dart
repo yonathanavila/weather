@@ -16,14 +16,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocationWeather() async {
-    var weatherResponse = await WeatherModel().getLocationWeather();
+    var (weatherResponse, airPollutionResponse) =
+        await WeatherModel().getLocationWeather();
 
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
         return LocationScreen(
-          locationWeather: weatherResponse,
-        );
+            locationWeather: weatherResponse,
+            airPollution: airPollutionResponse);
       }),
     );
   }
@@ -44,10 +45,4 @@ class _LoadingScreenState extends State<LoadingScreen> {
         ));
   }
 
-  @override
-  void dispose() {
-    // Cleanup resources here
-    super.dispose();
-    print("exit");
-  }
 }
