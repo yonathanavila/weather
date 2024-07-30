@@ -4,6 +4,15 @@ const kTempTextStyle = TextStyle(
   fontFamily: 'Spartan MB',
   fontSize: 100.0,
 );
+const kPollTextStyle = TextStyle(
+  fontFamily: 'Spartan MB',
+  fontSize: 60.0,
+);
+
+const kPollVarLabelTextStyle = TextStyle(
+  fontFamily: 'Spartan MB',
+  fontSize: 35.0,
+);
 
 const kMessageTextStyle = TextStyle(
   fontFamily: 'Spartan MB',
@@ -20,6 +29,10 @@ const kConditionTextStyle = TextStyle(
   fontSize: 100.0,
 );
 
+const kPollIconTextStyle = TextStyle(
+  fontSize: 45.0,
+);
+
 const kTextFieldInputDecoration = InputDecoration(
   filled: true,
   fillColor: Colors.white,
@@ -33,3 +46,14 @@ const kTextFieldInputDecoration = InputDecoration(
   hintText: 'Santa Rosa de Copan',
   hintStyle: TextStyle(color: Colors.grey),
 );
+
+const kPollutionLabelTextStyle = TextStyle(
+  fontSize: 30.0,
+  fontWeight: FontWeight.bold
+);
+
+const kPollutionMessageTextStyle = TextStyle(
+    fontSize: 45.0,
+    fontWeight: FontWeight.bold
+);
+
