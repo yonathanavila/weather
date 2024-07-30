@@ -32,7 +32,7 @@ flutter:
     - .env
 
   fonts:
-    - family: Spartan
+    - family: Spartan MB
       fonts:
         - asset: fonts/SpartanMB-Black.otf
           weight: 700

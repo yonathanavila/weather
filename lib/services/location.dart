@@ -5,7 +5,7 @@ class Location {
   late double latitude;
   late double longitude;
 
-  Future<void> getCurrentLocation() async {
+  Future<dynamic> getCurrentLocation() async {
     try {
       bool serviceEnabled;
       LocationPermission permission;
