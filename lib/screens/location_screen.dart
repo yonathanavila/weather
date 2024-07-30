@@ -4,9 +4,10 @@ import 'package:weather/services/weather.dart';
 import 'package:weather/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
-  LocationScreen({this.locationWeather});
+  LocationScreen({required this.locationWeather, required this.airPollution});
 
   final locationWeather;
+  final airPollution;
 
   @override
   _LocationScreenState createState() => _LocationScreenState();
@@ -17,18 +18,24 @@ class _LocationScreenState extends State<LocationScreen> {
   late String zoneName;
   late int condition;
 
+  late double pm2_5; // PM 2.5 air pollution
+  late int aqi; // Air quality index
+
   WeatherModel weatherModel = WeatherModel();
   late String weatherIcon;
   late String weatherMessage;
+
+  late String pollutionIcon;
+  late String pollutionMessage;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    updateUI(widget.locationWeather);
+    updateUI(widget.locationWeather, widget.airPollution);
   }
 
-  void updateUI(dynamic weatherData) {
+  void updateUI(dynamic weatherData, dynamic airPollutionData) {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
@@ -37,13 +44,27 @@ class _LocationScreenState extends State<LocationScreen> {
         zoneName = '';
         return;
       }
-      var temp = (weatherData["main"]["temp"]);
+
+      if (airPollutionData == null) {
+        pollutionIcon = "Error";
+        pollutionMessage = "Unable to get the pollution data!";
+        return;
+      }
+
+      var temp = (weatherData['main']['temp']);
       temperature = temp.toInt();
-      condition = weatherData["weather"][0]["id"];
-      zoneName = weatherData["name"];
+      condition = weatherData['weather'][0]['id'];
+      zoneName = weatherData['name'];
 
       weatherIcon = weatherModel.getWeatherIcon(condition);
       weatherMessage = weatherModel.getMessage(temperature);
+
+      var _pollutionData = airPollutionData['list'][0];
+      var _pm2_5 = _pollutionData['components']['pm2_5'];
+      pm2_5 = _pm2_5;
+      aqi = _pollutionData['main']['aqi'];
+      pollutionIcon = weatherModel.getPollutionIcon(pm2_5);
+      pollutionMessage = weatherModel.getPollutionMessage(aqi);
     });
   }
 
@@ -53,13 +74,13 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/location_background.jpg'),
+            image: const AssetImage('images/location_background.jpg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
                 Colors.white.withOpacity(0.8), BlendMode.dstATop),
           ),
         ),
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,8 +91,9 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   TextButton(
                     onPressed: () async {
-                      var weatherData = await weatherModel.getLocationWeather();
-                      updateUI(weatherData);
+                      var (weatherData, airPollutionData) =
+                          await weatherModel.getLocationWeather();
+                      updateUI(weatherData, airPollutionData);
                     },
                     child: const Icon(
                       Icons.near_me,
@@ -90,10 +112,10 @@ class _LocationScreenState extends State<LocationScreen> {
                         ),
                       );
                       if (typedName != null) {
-                        var weatherData = await weatherModel
+                        var (weatherData, airPollutionData) = await weatherModel
                             .getLocationWeatherByName(typedName);
 
-                        updateUI(weatherData);
+                        updateUI(weatherData, airPollutionData);
                       }
                     },
                     child: const Icon(
@@ -104,19 +126,71 @@ class _LocationScreenState extends State<LocationScreen> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      '$temperature°',
-                      style: kTempTextStyle,
-                    ),
-                    Text(
-                      weatherIcon,
-                      style: kConditionTextStyle,
-                    ),
-                  ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            '$temperature°',
+                            style: kTempTextStyle,
+                          ),
+                          Text(
+                            weatherIcon,
+                            style: kConditionTextStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'PM 2.5 ',
+                                style: kPollVarLabelTextStyle,
+                              ),
+                              Text(
+                                'Air Pollution',
+                                style: kPollutionLabelTextStyle,
+                              )
+                            ],
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  ' ${(pm2_5).toStringAsFixed(1)} ',
+                                  style: kPollTextStyle,
+                                ),
+                                Text(
+                                  pollutionIcon,
+                                  style: kPollIconTextStyle,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                pollutionMessage,
+                                style: kPollutionMessageTextStyle,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Padding(
